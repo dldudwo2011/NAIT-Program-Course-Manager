@@ -1,0 +1,127 @@
+﻿@page "{programCourseID?}"
+@model MyApp.Namespace.CRUDModel
+@{
+}
+
+@section scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<h1>Manage Program Courses</h1>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <form method="get" style="display: flex; position:absolute; top: 470px; right:80px;">
+            <label style="display: block; margin-right: 15px; width:200px; text-align:center; vertical-align:middle">Search Courses</label>
+            <input style="margin-right:15px;" type="search" value="@Model.filterWord" placeholder="Partial Name/ID" asp-for="filterWord">
+            <button type="submit">Filter</button>
+        </form>
+
+        <p style="color:red; font-weight: bold;">@Model.ErrorMessage</p>
+    }
+
+@if (string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <form method="get" style="display: flex; position:absolute; top: 400px; right:80px;">
+            <label style="display: block; margin-right: 15px; width:200px; text-align:center; vertical-align:middle">Search Courses</label>
+            <input style="margin-right:15px;" type="search" placeholder="Partial Name/ID" asp-for="filterWord" />
+            <button type="submit">Filter</button>
+        </form>
+    }
+
+<form method="post">
+
+    <div style="margin-bottom:40px; display:flex">
+        <button type="submit" asp-page-handler="Add" style="margin-right:10px;">Add</button>
+        <button type="submit" asp-page-handler="Update" style="margin-right:10px;">Update</button>
+        <button type="submit" asp-page-handler="Delete" onclick="return confirm('Are you sure you want to deactivate this program course?')" style="margin-right:10px;">Delete</button>
+        <button  type="submit" asp-page-handler="Cancel" onclick="window.location.href='/Query'">Cancel</button>
+    </div>
+
+    @if(Model.programCourse == null)
+            {
+                <div style="margin-bottom:40px">
+                    <label style="font-weight:bold">
+                        ID
+                        <span asp-validation-for="programCourse.ProgramCourseId" style="color:red;"></span>
+                        <input id="ProgramCourseId" type="number" value="0" asp-for="programCourse.ProgramCourseId" />
+                    </label>
+                </div>
+            }
+
+    else
+        { 
+                <div style="margin-bottom:40px">
+                    <label style="font-weight:bold">
+                        ID
+                        <span asp-validation-for="programCourse.ProgramCourseId" style="color:red;"></span>
+                        <input id="ProgramCourseId" type="number" asp-for="programCourse.ProgramCourseId" />
+                    </label>
+                </div>
+        }
+
+<div style="margin-bottom:40px">
+    <label for="program" style="font-weight:bold">
+        Program
+        <span asp-validation-for="programCourse.ProgramId" style="color:red;"></span>
+        <input list="programs" type="text" id="program" asp-for="programCourse.ProgramId" />
+
+        <datalist id="programs">
+            @foreach (var program in Model.programs)
+            {
+                <option value="@program.Value">@program.Text</option>
+            }
+        </datalist>
+    </label>
+</div>
+
+    <div style="margin-bottom:90px">
+        <label for="course" style="font-weight:bold">
+            Course
+            <span asp-validation-for="programCourse.CourseId" style="color:red;"></span>
+            <input list="courses" type="text" id="course" asp-for="programCourse.CourseId" />
+
+            <datalist id="courses">
+                @foreach (var course in Model.courses)
+                {
+                    <option value="@course.Value">@course.Text</option>
+                }
+            </datalist>
+        </label>
+    </div>
+
+    <div style="margin-bottom:40px">
+        <label style="font-weight: bold">Required</label>
+        <label>
+            <input id="Required" type="checkbox" asp-for="programCourse.Required" />Is Required
+        </label>
+    </div>
+
+    <div style="margin-bottom:40px">
+        <label style="font-weight:bold">
+            Comments
+            <span asp-validation-for="programCourse.Comments" style="color:red;"></span>
+            <textarea id="Notes" asp-for="programCourse.Comments"></textarea>
+        </label>
+    </div>
+
+    <div style="margin-bottom:40px">
+        <label style="font-weight:bold">
+            Section Limit
+            <span asp-validation-for="programCourse.SectionLimit" style="color:red;"></span>
+            <input id="SectionLimit" type="number" asp-for="programCourse.SectionLimit" />
+        </label>
+    </div>
+
+    <div style="margin-bottom:40px">
+        <label style="font-weight:bold">Active</label>
+        <label>
+            <input id="Active" type="checkbox" asp-for="programCourse.Active" />Is Active
+        </label>
+    </div>
+
+    <table>
+
+    </table>
+
+</form>

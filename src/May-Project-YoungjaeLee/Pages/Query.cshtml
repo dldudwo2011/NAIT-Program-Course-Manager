@@ -1,0 +1,188 @@
+﻿@page 
+@model MyApp.Namespace.QueryModel
+@{
+}
+
+<h1>Search Program Courses</h1>
+
+<p>There are @Model.TotalResults results for this page. You are on page # <b>@Model.Current</b> of <i>@Model.LastPage</i> pages, showing items @Model.FromItem to @Model.ToItem</p>
+
+<div style="margin-bottom:40px; display:flex">
+    <form method="get" style="display:flex">
+        <label style="display:block; margin-right:15px">Program</label>
+        <select style="margin-right:15px;" id="Program" asp-items="Model.programs" asp-for="selectedProgram">
+            <option value="0">[Pick a Program]</option>
+        </select>
+
+        <button style="margin-right:15px" type="submit">Show Program Courses</button>
+    </form>
+
+    <button onclick="window.location.href='/CRUD'">Add new ...</button>
+</div>
+
+<table>
+    <tr>
+        <td>Action</td>
+        <td>Course Number</td>
+        <td>Course Name</td>
+        <td>Required</td>
+        <td>Section Limit</td>
+        <td>Credits</td>
+    </tr>
+    @{
+        if (Model.programCourses != null && Model.programCourses.Items != null)
+        {
+            foreach (var item in Model.programCourses.Items)
+            {
+        <tr>
+            <td><a asp-page="/CRUD" asp-route-programCourseID="@item.ProgramCourseId">Edit</a></td>
+            <td>@item.CourseId</td>
+            <td>@item.Course.CourseName</td>
+            <td>@item.Required</td>
+            <td>@item.SectionLimit</td>
+            <td>@item.Course.Credits</td>
+        </tr>
+            }
+        }
+        else
+        {
+            <p>No results found</p>
+        }
+
+
+    }
+
+    <tfoot>
+        <tr>
+            <td colspan="3">
+                @{
+                    <a title="First Page" asp-page="/Query" asp-route-currentpage="@(Model.FirstPage)" asp-route-selectedProgram="@(Model.selectedProgram)">&laquo;</a>
+                    <a title="Previous Page" asp-page="/Query" asp-route-currentpage="@(Model.PreviousPage)" asp-route-selectedProgram="@(Model.selectedProgram)">&lsaquo;</a>
+                    if (Model.LastPage < 20)
+                    {
+                        for (int counter = 1; counter <= Model.LastPageLink; counter++)
+                        {
+                            if (counter == Model.Current)
+                            {
+                                <b>@counter</b>
+                            }
+                            else
+                            {
+                                <a asp-page="/Query" asp-route-currentpage="@counter" asp-route-selectedProgram="@(Model.selectedProgram)"> @counter </a>
+                            }
+                        }
+                    }
+
+                    else if (Model.LastPage % 20 != 0)
+                    {
+                        int specialNumber = Model.LastPage - Model.lastDigit + 1;
+
+                        if (((Model.Current % 20) == 1))
+                        {
+                            for (var counter = Model.Current; counter <= Model.LastPageLink; counter++)
+                            {
+                                if (counter == Model.Current)
+                                {
+                                    <b>@counter</b>
+                                }
+                                else
+                                {
+                                    <a asp-page="/Query" asp-route-currentpage="@counter" asp-route-selectedProgram="@(Model.selectedProgram)"> @counter </a>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            int first;
+                            int last;
+
+                            if (@Model.Current < 20)
+                            {
+                                first = 1;
+                                last = 20;
+                            }
+                            else if (@Model.Current % 20 != 0 && @Model.Current > 20 && @Model.Current < specialNumber)
+                            {
+                                first = (@Model.Current - (@Model.Current % 20) + 1);
+                                last = first + 19;
+                            }
+                            else if (@Model.Current >= specialNumber)
+                            {
+                                first = specialNumber;
+                                last = Model.LastPage;
+                            }
+                            else
+                            {
+                                first = @Model.Current - 19;
+                                last = @Model.Current;
+                            }
+                            for (var counter = first; counter <= last; counter++)
+                            {
+                                if (counter == Model.Current)
+                                {
+                                    <b>@counter</b>
+                                }
+                                else
+                                {
+                                    <a asp-page="/Query" asp-route-currentpage="@counter" asp-route-selectedProgram="@(Model.selectedProgram)"> @counter </a>
+                                }
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        if ((Model.Current % 20) == 1)
+                        {
+                            for (var counter = Model.Current; counter <= Model.LastPageLink; counter++)
+                            {
+                                if (counter == Model.Current)
+                                {
+                                    <b>@counter</b>
+                                }
+                                else
+                                {
+                                    <a asp-page="/Query" asp-route-currentpage="@counter" asp-route-selectedProgram="@(Model.selectedProgram)"> @counter </a>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            int first;
+                            int last;
+
+                            if (@Model.Current < 20)
+                            {
+                                first = 1;
+                                last = 20;
+                            }
+                            else if (@Model.Current % 20 != 0 && @Model.Current > 20)
+                            {
+                                first = (@Model.Current - (@Model.Current % 20)) + 1;
+                                last = first + 19;
+                            }
+                            else
+                            {
+                                first = @Model.Current - 19;
+                                last = @Model.Current;
+                            }
+                            for (var counter = first; counter <= last; counter++)
+                            {
+                                if (counter == Model.Current)
+                                {
+                                    <b>@counter</b>
+                                }
+                                else
+                                {
+                                    <a asp-page="/Query" asp-route-currentpage="@counter" asp-route-selectedProgram="@(Model.selectedProgram)"> @counter </a>
+                                }
+                            }
+                        }
+                    }
+                    <a title="Next Page" asp-page="/Query" asp-route-currentpage="@(Model.NextPage)" asp-route-selectedProgram="@(Model.selectedProgram)">&rsaquo;</a>
+                    <a title="Last Page" asp-page="/Query" asp-route-currentpage="@(Model.LastPage)" asp-route-selectedProgram="@(Model.selectedProgram)">&raquo;</a>
+                }
+            </td>
+        </tr>
+    </tfoot>
+</table>
